@@ -1,0 +1,9 @@
+<?php
+
+$dbhost = "ip";
+$dbuser = "username";
+$dbpass = "password";
+$default_db = "default database";
+
+?>
+
