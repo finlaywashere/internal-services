@@ -93,10 +93,11 @@ function login_verify($user_name,$token){
 	if(!$conn){
 		return -1;
 	}
-	$stmt = $conn->prepare("SELECT `user_perms` FROM `tokens` WHERE `user_username`=?;");
-    $stmt->bind_param("s",$user_name);
+	$stmt = $conn->prepare("SELECT `user_perms`,`user_id` FROM `users` WHERE `user_username`=?;");
+	$stmt->bind_param("s",$user_name);
     $stmt->execute();
-    if(!mysqli_num_rows($result)){
+    $result = $stmt->get_result();
+	if(!mysqli_num_rows($result)){
         $conn->close();
         return -1;
     }
@@ -105,7 +106,7 @@ function login_verify($user_name,$token){
     $perms = $row['user_perms'];
 	$user = $row['user_id'];
 
-	$stmt = $conn->prepare("SELECT `user_token` FROM `tokens` WHERE `user_id`=? AND `token_expiry` > now() AND `token_type` = 0;");
+	$stmt = $conn->prepare("SELECT `token_data` FROM `tokens` WHERE `user_id`=? AND `token_expiry` > now() AND `token_type` = 0;");
 	$stmt->bind_param("i",$user);
 	$stmt->execute();
 
@@ -117,7 +118,7 @@ function login_verify($user_name,$token){
 	}
 	$found = false;
 	while($row = $result->fetch_assoc()){
-		if($token == $row['user_token']){
+		if($token == $row['token_data']){
 			$found = true;
 			break;
 		}
@@ -135,11 +136,17 @@ function login_verify($user_name,$token){
 */
 function authenticate_request(int $min_perms){
 	GLOBAL $_REQUEST;
-	if(!isset($_REQUEST['username']) || !isset($_REQUEST['token'])){
+	GLOBAL $_COOKIE;
+	if((!isset($_REQUEST['username']) || !isset($_REQUEST['token'])) && (!isset($_COOKIE['username']) || !isset($_COOKIE['token']))){
 		return 0;
 	}
-	$username = $_REQUEST['username'];
-	$token = $_REQUEST['token'];
+	if(isset($_REQUEST['username'])){
+		$username = $_REQUEST['username'];
+		$token = $_REQUEST['token'];
+	}else{
+		$username = $_COOKIE['username'];
+		$token = $_COOKIE['token'];
+	}
 	$perms = login_verify($username,$token);
 	if($perms < 0){
 		return 0;

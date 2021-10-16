@@ -1,3 +1,6 @@
 [submodule "inventory"]
 	path = inventory
-	url = https://github.com/finlaywashere/GarageInventory
+	url = git@github.com:finlaywashere/GarageInventory
+[submodule "jannette"]
+	path = jannette
+	url = git@github.com:finlaywashere/Jannette

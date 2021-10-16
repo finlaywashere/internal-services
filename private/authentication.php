@@ -1,5 +1,5 @@
 <?php
 
-require_once "authentication/api/private/authentication.php";
+require_once dirname(__DIR__) . "/authentication/api/private/authentication.php";
 
 ?>
