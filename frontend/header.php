@@ -10,4 +10,10 @@
 			?>
 		</ul>
 	</div>
+	<div class="right">
+		<ul>
+			<li>Welcome <?php echo $_COOKIE['username']; ?>!</li>
+			<li><a href=/authentication/frontend/logout.php?referrer=/frontend/index.php>Logout</a></li>
+		</ul>
+	</div>
 </div>

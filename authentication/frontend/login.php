@@ -12,7 +12,6 @@
 				$timestamp = time() + 60*60*24*30; // Set the cookies to expire in 30 days
 				setcookie("username",$username,$timestamp,"/");
 				setcookie("token",$result,$timestamp,"/");
-				
 				if(isset($_REQUEST['referrer'])){
 					$referrer = $_REQUEST['referrer'];
 				}else{
@@ -40,6 +39,11 @@
 		Username:<input type="text" name="username"><br>
 		Password:<input type="password" name="password"><br>
 		<input type="submit" value="Log In">
+		<?php
+		if(isset($_REQUEST['referrer'])){
+			echo "<input type=\"hidden\" name=\"referrer\" value=\"".$_REQUEST['referrer']."\">";
+		}
+		?>
 	</form>
 	<?php
 		GLOBAL $failure;

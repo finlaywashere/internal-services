@@ -17,7 +17,12 @@
 <body>
 <?php require("header.php")?>
 <div class="content">
-	Test123
+	<ul>
+		<li>
+			<h2>Message of the day</h2>
+			<p><?php require("../data/motd.txt");?></p>
+		</li>
+	</ul>
 </div>
 </body>
 </html>

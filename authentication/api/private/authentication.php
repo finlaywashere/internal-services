@@ -48,6 +48,25 @@ function login($user,$password){
 	$conn->close();
 	return $token;
 }
+function logout($user,$token){
+	if(login_verify($user,$token) < 0){
+		return 0;
+	}
+	$conn = db_connect();
+	if(!$conn){
+		return 0;
+	}
+	$stmt = $conn->prepare("SELECT `user_id` FROM `users` WHERE `user_username`=?;");
+	$stmt->bind_param("s",$user);
+	$stmt->execute();
+	$row = $stmt->get_result()->fetch_assoc();
+	$id = $row['user_id'];
+	$stmt = $conn->prepare("DELETE FROM `tokens` WHERE `user_id`=? AND `token_data`=?;");
+	$stmt->bind_param("is",$id,$token);
+	$stmt->execute();
+	$conn->close();
+	return 1;
+}
 /**
 	This function is designed to be used internally by authenticated users and not open to anyone
 */
