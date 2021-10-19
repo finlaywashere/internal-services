@@ -6,7 +6,8 @@
 $modules = array(
 	array("Inventory","/inventory/frontend/"),
 	array("Jannette", "/jannette/frontend/"),
-	array("Authentication", "/authentication/frontend/"));
+	array("Authentication", "/authentication/frontend/"),
+	array("Main Page", "/frontend/"));
 
 $login_page = "/authentication/frontend/login.php";
 
