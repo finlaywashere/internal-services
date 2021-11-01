@@ -1,6 +1,6 @@
 [submodule "inventory"]
 	path = inventory
 	url = git@github.com:finlaywashere/GarageInventory
-[submodule "jannette"]
-	path = jannette
-	url = git@github.com:finlaywashere/Jannette
+[submodule "janet"]
+	path = janet
+	url = git@github.com:finlaywashere/Janet

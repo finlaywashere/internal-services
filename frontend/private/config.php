@@ -5,7 +5,7 @@
 
 $modules = array(
 	array("Inventory","/inventory/frontend/"),
-	array("Jannette", "/jannette/frontend/"),
+	array("Janet", "/janet/frontend/"),
 	array("Authentication", "/authentication/frontend/"),
 	array("Main Page", "/frontend/"));
 
