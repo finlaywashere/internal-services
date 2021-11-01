@@ -3,4 +3,4 @@
 	url = git@github.com:finlaywashere/GarageInventory
 [submodule "janet"]
 	path = janet
-	url = git@github.com:finlaywashere/Janet
+	url = git@github.com:finlaywashere/Janet-Server
