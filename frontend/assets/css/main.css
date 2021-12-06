@@ -58,3 +58,11 @@ body{
 	width: 35%;
 	height: 20%;
 }
+ul{
+	display: inline-block;
+	list-style: none;
+}
+.subheader{
+	padding: 4px;
+	padding-right: 10px;
+}

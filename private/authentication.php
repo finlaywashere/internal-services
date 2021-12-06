@@ -1,5 +1,5 @@
 <?php
 
-require_once dirname(__DIR__) . "/authentication/api/private/authentication.php";
+require_once $_SERVER['DOCUMENT_ROOT'] . "/authentication/api/private/authentication.php";
 
 ?>
