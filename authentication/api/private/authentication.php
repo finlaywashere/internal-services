@@ -206,5 +206,14 @@ function authenticate_request(int $min_perms){
 	}
 	return $perms >= $min_perms;
 }
+function get_username(){
+	if(isset($_REQUEST['username'])){
+		return $_REQUEST['username'];
+	}else if(isset($_COOKIE['username'])){
+		return $_COOKIE['username'];
+	}else{
+		return NULL;
+	}
+}
 
 ?>
