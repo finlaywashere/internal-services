@@ -14,9 +14,9 @@ $email = readline();
 $result = register($username,$password,$email,$perms);
 
 if($result){
-	die("Successfully registered user!");
+	die("\nSuccessfully registered user!");
 }else{
-	die("Failed to register user, error code ".$result);
+	die("\nFailed to register user, error code ".$result);
 }
 
 ?>

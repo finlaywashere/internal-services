@@ -106,7 +106,7 @@ function logout($user,$token){
 	This function is designed to be used internally by authenticated users and not open to anyone
 */
 function register($user,$password,$email,$perms){
-	$conn = db_connect();
+	/*$conn = db_connect();
 	if(!$conn){
 		return 0;
 	}
@@ -127,7 +127,10 @@ function register($user,$password,$email,$perms){
 	$stmt->execute();
 
 	$conn->close();
-	return 1;
+	return 1;*/
+	// DB access is broken from the CLI because of weirdness with how paths are handled
+	$hash = password_hash($password,PASSWORD_DEFAULT);
+	echo "Password hash is ".$hash;
 }
 function change_password($user,$password){
 	$conn = db_connect();
