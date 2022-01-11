@@ -2,21 +2,11 @@
 
 require_once "authentication.php";
 
-echo "Enter username: ";
-$username = readline();
 echo "Enter password: ";
 $password = readline();
-echo "Enter permission level: ";
-$perms = (int) readline();
-echo "Enter email: ";
-$email = readline();
 
-$result = register($username,$password,$email,$perms);
+$hash = password_hash($password,PASSWORD_DEFAULT);
 
-if($result){
-	die("\nSuccessfully registered user!");
-}else{
-	die("\nFailed to register user, error code ".$result);
-}
+echo "Password hash is \"".$hash."\". You must manually insert it into the authentication database!";
 
 ?>
