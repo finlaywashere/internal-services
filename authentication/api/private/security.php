@@ -152,6 +152,29 @@ function create_key($user, $type, $subtype, $security, $auth, $contents){
 	return 1;
 }
 
+function destroy_key($key){
+	$conn = db_connect();
+	if(!$conn){
+		return 0;
+	}
+	$stmt = $conn->prepare("DELETE FROM security_keys WHERE key_contents=?;");
+	$stmt->bind_param("s",$key);
+	$stmt->execute();
+	$conn->close();
+	return 1;
+}
+function revoke_keys($user){
+	$conn = db_connect();
+	if(!$conn){
+		return 0;
+	}
+	$stmt = $conn->prepare("DELETE FROM security_keys WHERE user_id=?;");
+	$stmt->bind_param("i",$user);
+	$stmt->execute();
+	$conn->close();
+	return 1;
+}
+
 /**
 
 Returns:

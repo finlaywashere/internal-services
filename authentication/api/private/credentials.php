@@ -109,7 +109,10 @@ function change_password($user,$password){
 	$stmt->bind_param("ss",$hash,$user);
 	$stmt->execute();
 	$conn->close();
-	return revoke_tokens($user);
+	if(!revoke_tokens($user)){
+		return 0;
+	}
+	return revoke_keys(get_user_id($user));
 }
 function register($user,$password,$email,$perms){
 	$conn = db_connect();
@@ -189,6 +192,30 @@ function get_user($id){
 	$array = array('username' => $row['user_username'], 'perms' => $row['user_perms'], 'email' => $row['user_email']);
 	$conn->close();
 	return $array;
+}
+/**
+
+Gets a user's id by their username
+
+*/
+function get_user_id($user){
+	$conn = db_connect();
+	if(!$conn){
+		return 0;
+	}
+	$stmt = $conn->prepare("SELECT user_id FROM users WHERE user_username=?;");
+	$stmt->bind_param("s",$user);
+	$stmt->execute();
+
+	$result = $stmt->get_result();
+	if(!mysqli_num_rows($result)){
+		$conn->close();
+		return 0;
+	}
+	$row = $result->fetch_assoc();
+	$id = $row['user_id'];
+	$conn->close();
+	return $id;
 }
 /**
 	Helper function to easily authenticate user and check permission levels

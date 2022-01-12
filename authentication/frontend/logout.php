@@ -5,6 +5,10 @@
 		setcookie("username","",time()-3600,"/");
 		setcookie("token","",time()-3600,"/");
 	}
+	if(isset($_COOKIE['key'])){
+		destroy_key($_COOKIE['key']);
+		setcookie("key","",time()-3600,"/");
+	}
 	if(isset($_REQUEST['referrer'])){
 		$referrer = $_REQUEST['referrer'];
 	}else{
