@@ -2,18 +2,15 @@
 
 header('Content-Type: application/json');
 
-require_once "../private/authentication.php";
+require_once "../../private/authentication.php";
 
-if(!isset($_REQUEST['username']) || !isset($_REQUEST['token'])){
-    die(json_encode(array('success' => false)));
+if(!isset($_REQUEST['min_perms'])){
+	die(json_encode(array('success' => false, 'reason' => 'invalid_request')));
 }
-$username = $_REQUEST['username'];
-$token = $_REQUEST['token'];
-
-$success = login_verify($username,$token);
-if(!$success){
-    die(json_encode(array('success' => false, 'reason' => '1')));
-}
-die(json_encode(array('success' => true)));
+$perms = $_REQUEST['min_perms'];
+$result = authenticate_request($perms);
+if($result)
+	die(json_encode(array('success' => true)));
+die(json_encode(array('success' => false)));
 
 ?>

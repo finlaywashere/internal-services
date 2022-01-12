@@ -12,7 +12,7 @@
 	</div>
 	<div class="right">
 		<ul>
-			<li>Welcome <?php echo $_COOKIE['username']; ?>!</li>
+			<li>Welcome <?php echo get_username(); ?>!</li>
 			<li><a href=/authentication/frontend/logout.php?referrer=/frontend/index.php>Logout</a></li>
 		</ul>
 	</div>

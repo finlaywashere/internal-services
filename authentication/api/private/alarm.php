@@ -9,7 +9,7 @@ function trigger_alarm($alarm, $reason){
 	$stmt = $conn->prepare("UPDATE security_alarms SET alarm_triggered=1 WHERE alarm_id=?;");
 	$stmt->bind_param("i",$alarm);
 	$stmt->execute();
-	return security_event(2,$alarm,$reason,"","");
+	return security_event(2,$alarm,$reason,"Alarm #".$alarm." triggered!","");
 }
 function reset_alarm($alarm){
 	$conn = db_connect();

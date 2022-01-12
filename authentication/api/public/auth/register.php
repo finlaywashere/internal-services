@@ -2,7 +2,7 @@
 
 header('Content-Type: application/json');
 
-require_once "../private/authentication.php";
+require_once "../../private/authentication.php";
 
 $auth = authenticate_request(100);
 if(!$auth){

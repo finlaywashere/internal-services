@@ -2,7 +2,7 @@
 
 header('Content-Type: application/json');
 
-require_once "../private/authentication.php";
+require_once "../../private/authentication.php";
 
 if(isset($_REQUEST['username']) && isset($_REQUEST['token'])){
 	$user = $_REQUEST['username'];

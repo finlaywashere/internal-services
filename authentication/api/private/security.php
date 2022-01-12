@@ -22,6 +22,87 @@ function security_event($type, $actor, $source, $info, $extra){
 	$conn->close();
 	return 1;
 }
+/**
+
+Search for security events in the log by a search type and value
+
+*/
+function search_security_events($stype,$value){
+	$conn = db_connect();
+	if(!$conn){
+		return NULL;
+	}
+	$stmt = NULL;
+	if($stype == 1){
+		// Search by source
+		$value = "%".$value."%";
+		$stmt = $conn->prepare("SELECT event_id FROM security_events WHERE event_source LIKE ?;");
+		$stmt->bind_param("s",$value);
+	}else if($stype == 2){
+		// Search by date
+		$stmt = $conn->prepare("SELECT event_id FROM security_events WHERE DATE(event_time) = ?;");
+		$stmt->bind_param("s",$value);
+	}else if($stype == 3){
+		// Search by contents
+		$value = "%".$value."%";
+		$stmt = $conn->prepare("SELECT event_id FROM security_events WHERE journal_info LIKE ?;");
+		$stmt->bind_param("s",$value);
+	}else if($stype == 4){
+		// Search by event type
+		$stmt = $conn->prepare("SELECT event_id FROM security_events WHERE event_type = ?;");
+		$stmt->bind_param("i",$value);
+	}else if($stype == 5){
+		// Search by actor
+		$stmt = $conn->prepare("SELECT event_id FROM security_events WHERE actor_id = ?;");
+		$stmt->bind_param("i",$value);
+	}else if($stype == 6){
+		// Search by extra
+		$value = "%".$value."%";
+		$stmt = $conn->prepare("SELECT event_id FROM security_events WHERE event_extra LIKE ?;");
+		$stmt->bind_param("s",$value);
+	}else if($stype == 7){
+		// Search by event id
+		$stmt = $conn->prepare("SELECT event_id FROM security_events WHERE event_id = ?;");
+		$stmt->bind_param("i",$value);
+	}else{
+		$conn->close();
+		return NULL;
+	}
+	$stmt->execute();
+	$result = $stmt->get_result();
+	if(!mysqli_num_rows($result)){
+		return array();
+	}
+	$return = array();
+	while($row = $result->fetch_assoc()){
+		array_push($return,$row['event_id']);
+	}
+	$conn->close();
+	return $return;
+}
+/**
+
+Gets a security event by its event id
+
+*/
+function get_security_event($id){
+	$conn = db_connect();
+	if(!$conn){
+		return NULL;
+	}
+	$stmt = $conn->prepare("SELECT * FROM security_events WHERE event_id = ?;");
+	$stmt->bind_param("i",$id);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	if(!mysqli_num_rows($result)){
+		return NULL;
+	}
+	$row = $result->fetch_assoc();
+	$array = array('actor' => $row['actor_id'], 'type' => $row['event_type'], 'source' => $row['event_source'], 'info' => $row['event_info'], 'extra' => $row['event_extra'], 'time' => $row['event_time']);
+	$conn->close();
+	return $array;
+}
+
 
 /**
 
@@ -50,6 +131,8 @@ Key security levels:
 1 - Password/PIN (stored in key_auth)
 2 - Login (must be logged into account in user_id)
 3 - Device (must be used on specific device eg alarm)
+
+Note: Key contents are not hashed to make finding them easier during login, DO NOT store passwords or any other PII in them
 
 */
 
@@ -87,7 +170,7 @@ function verify_key($key, $user, $auth, $device){
 		return 1;
 	}
 	$stmt = $conn->prepare("SELECT user_id,key_security,key_auth FROM security_keys WHERE key_contents=?;");
-	$stmt->bind("s",$key);
+	$stmt->bind_param("s",$key);
 	$stmt->execute();
 	$result = $stmt->get_result();
 	if(!mysqli_num_rows($result)){
@@ -120,19 +203,19 @@ function verify_key($key, $user, $auth, $device){
 }
 function get_key($key){
 	$conn = db_connect();
-    if(!$conn){
-        return -1;
-    }
-    $stmt = $conn->prepare("SELECT * FROM security_keys WHERE key_contents=?;");
-    $stmt->bind("s",$key);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    if(!mysqli_num_rows($result)){
-        $conn->close();
-        return -1;
-    }
-    $row = $result->fetch_assoc();
-	$array = array('type' => $row['key_type'], 'subtype' => $row['key_subtype'], 'user_id' => $row['user_id']);
+	if(!$conn){
+		return -1;
+	}
+	$stmt = $conn->prepare("SELECT * FROM security_keys WHERE key_contents=?;");
+	$stmt->bind_param("s",$key);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	if(!mysqli_num_rows($result)){
+		$conn->close();
+		return -1;
+	}
+	$row = $result->fetch_assoc();
+	$array = array('type' => $row['key_type'], 'subtype' => $row['key_subtype'], 'user' => $row['user_id']);
 	$conn->close();
 	return $array;
 }
