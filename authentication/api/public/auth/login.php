@@ -4,11 +4,11 @@ header('Content-Type: application/json');
 
 require_once "../../private/authentication.php";
 
-if(!isset($_REQUEST['username']) || !isset($_REQUEST['password'])){
+if(!req_param('username') || !req_param('password')){
 	die(json_encode(array('success' => false)));
 }
-$username = $_REQUEST['username'];
-$password = $_REQUEST['password'];
+$username = req_get('username');
+$password = req_get('password');
 
 $token = login($username,$password);
 if(!$token){

@@ -9,6 +9,4 @@ $modules = array(
 	array("Authentication", "/authentication/frontend/"),
 	array("Main Page", "/frontend/"));
 
-$login_page = "/authentication/frontend/login.php";
-
 ?>

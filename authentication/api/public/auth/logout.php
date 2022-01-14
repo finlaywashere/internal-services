@@ -4,12 +4,9 @@ header('Content-Type: application/json');
 
 require_once "../../private/authentication.php";
 
-if(isset($_REQUEST['username']) && isset($_REQUEST['token'])){
-	$user = $_REQUEST['username'];
-	$token = $_REQUEST['token'];
-}else if(isset($_COOKIE['username']) && isset($_COOKIE['token'])){
-	$user = $_COOKIE['username'];
-	$token = $_COOKIE['token'];
+if(req_param('username') && req_param('token')){
+	$user = req_get('username');
+	$token = req_get('token');
 }else{
 	die(json_encode(array('success' => false)));
 }

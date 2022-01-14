@@ -4,31 +4,22 @@ header('Content-Type: application/json');
 
 require_once "../../private/authentication.php";
 
-if((!(isset($_REQUEST['key']) || isset($_COOKIE['key'])) && !(isset($_REQUEST['username']) || isset($_COOKIE['username']))) || !isset($_REQUEST['password']) || !isset($_REQUEST['new_password'])){
+if((!req_param("key") && !req_param("username")) || !req_param('password') || !req_param('new_password')){
 	die(json_encode(array('success' => false, 'reason' => 'invalid_request')));
 }
-if(isset($_REQUEST['key']) || isset($_COOKIE['key'])){
-	if(isset($_REQUEST['key'])){
-		$key = $_REQUEST['key'];
-	}else{
-		$key = $_COOKIE['key'];
-	}
+if(req_param("key")){
 	// Don't bother verifying the key as it is only being used to get a username
 	// Note: if 2fa for password change gets added then this will need to be checked if using a 2fa key to find username
-	$k = get_key($key);
+	$k = get_key(req_get("key"));
 	if($k == -1){
 		die(json_encode(array('success' => false, 'reason' => 'authorization')));
 	}
 	$username = get_user($k['user'])['username'];
 }else{
-	if(isset($_REQUEST['username'])){
-		$username = $_REQUEST['username'];
-	}else{
-		$username = $_COOKIE['username'];
-	}
+	$username = req_get("username");
 }
-$password = $_REQUEST['password'];
-$new_password = $_REQUEST['new_password'];
+$password = req_get('password');
+$new_password = req_get('new_password');
 
 $id = verify_creds($username,$password);
 if(!$id){

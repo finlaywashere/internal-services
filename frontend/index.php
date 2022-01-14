@@ -4,9 +4,7 @@
 	
 	$result = authenticate_request(0);
 	if($result == 0){
-		GLOBAL $login_page;
-		header("Location: ".$login_page."?referrer=/frontend/index.php");
-		die("Please log in!");
+		force_login();
 	}
 ?>
 <html>

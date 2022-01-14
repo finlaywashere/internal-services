@@ -11,13 +11,13 @@ Event types:
 Others are allowed (for use in other applications integrating with the auth framework) and are treated like type 3
 
 */
-function security_event($type, $actor, $source, $info, $extra){
+function security_event($type, $actor, $source, $info, $extra, $ip){
 	$conn = db_connect();
 	if(!$conn){
 		return 0;
 	}
-	$stmt = $conn->prepare("INSERT INTO security_events (actor_id,event_type,event_source,event_info,event_extra) VALUES (?,?,?,?,?)");
-	$stmt->bind_param("iisss",$actor,$type,$source,$info,$extra);
+	$stmt = $conn->prepare("INSERT INTO security_events (actor_id,event_type,event_source,event_info,event_extra,event_ip) VALUES (?,?,?,?,?,?)");
+	$stmt->bind_param("iissss",$actor,$type,$source,$info,$extra,$ip);
 	$stmt->execute();
 	$conn->close();
 	return 1;
@@ -64,6 +64,11 @@ function search_security_events($stype,$value){
 		// Search by event id
 		$stmt = $conn->prepare("SELECT event_id FROM security_events WHERE event_id = ?;");
 		$stmt->bind_param("i",$value);
+	}else if($stype == 8){
+		// Search by ip
+		$value = "%".$value."%";
+		$stmt = $conn->prepare("SELECT event_id FROM security_events WHERE event_ip LIKE ?;");
+		$stmt->bind_param("s",$value);
 	}else{
 		$conn->close();
 		return NULL;
@@ -98,7 +103,7 @@ function get_security_event($id){
 		return NULL;
 	}
 	$row = $result->fetch_assoc();
-	$array = array('actor' => $row['actor_id'], 'type' => $row['event_type'], 'source' => $row['event_source'], 'info' => $row['event_info'], 'extra' => $row['event_extra'], 'time' => $row['event_time']);
+	$array = array('actor' => $row['actor_id'], 'type' => $row['event_type'], 'source' => $row['event_source'], 'info' => $row['event_info'], 'extra' => $row['event_extra'], 'time' => $row['event_time'], 'ip' => $row['event_ip']);
 	$conn->close();
 	return $array;
 }
