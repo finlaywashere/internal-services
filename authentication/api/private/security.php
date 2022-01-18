@@ -243,9 +243,71 @@ function get_key($key){
 		return -1;
 	}
 	$row = $result->fetch_assoc();
-	$array = array('type' => $row['key_type'], 'subtype' => $row['key_subtype'], 'user' => $row['user_id']);
+	$array = array('type' => $row['key_type'], 'subtype' => $row['key_subtype'], 'user' => $row['user_id'], 'key' => $row['key_id']);
 	$conn->close();
 	return $array;
+}
+/**
+
+Creates an override for a transaction and validates the key used
+
+*/
+function create_override($key, $transaction, $source, $field, $data, $reason){
+	$authorized = verify_key($key);
+	if($authorized){
+		return 2;
+	}
+	$key_data = get_key($key);
+	if($key_data['type'] != 1 || $key_data['subtype'] != 0){
+		return 3;
+	}
+	$id = $key_data['key'];
+	$conn = db_connect();
+	if(!$conn){
+		return 1;
+	}
+	$stmt = $conn->prepare("INSERT INTO `security_overrides` (key_id,override_reason,transaction_id,transaction_source,transaction_field,transaction_data) VALUES (?,?,?,?,?,?);");
+	$stmt->bind_param("isisss",$id,$reason,$transaction,$source,$field,$date);
+	$stmt->execute();
+
+	$conn->close();
+	return 0;
+}
+
+/**
+
+Retrieves all of the overrides for a given transaction and does basic validation
+NOTE: The application must validate that the source, field, and data are all correct to make sure that that data is locked in
+
+NOTE: This invalidates every override from the current transaction when called to prevent replay attacks
+
+*/
+
+function retrieve_overrides($transaction){
+	$conn = db_connect();
+	if(!$conn){
+		return NULL;
+	}
+	$stmt = $conn->prepare("SELECT * FROM security_overrides WHERE transaction_id=? AND override_expiry > NOW();");
+	$stmt->bind_param("i",$transaction);
+	$stmt->execute();
+
+	$result = $stmt->get_result();
+	if(!mysqli_num_rows($result)){
+		return array();
+	}
+	$return = array();
+	while($row = $result->fetch_assoc()){
+		array_push($return,array('key_id' => $row['key_id'], 'reason' => $row['override_reason'], 'source' => $row['transaction_source'], 'field' => $row['transaction_field'], 'data' => $row['transaction_data']));
+	}
+	$stmt = $conn->prepare("DELETE FROM security_overrides WHERE transaction_id=?;");
+	$stmt->bind_param("i",$transaction);
+	$stmt->execute();
+	$conn->close();
+	return $return;
+}
+function create_transaction(){
+	return random_int(0,1000000000);
 }
 
 ?>
