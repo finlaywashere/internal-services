@@ -218,9 +218,13 @@ function get_user_id($user){
 	return $id;
 }
 /**
-	Helper function to easily authenticate user and check permission levels
+    Helper function to easily authenticate user and check permission levels
 */
+
 function authenticate_request(int $min_perms){
+	return get_permissions() > $min_perms;
+}
+function get_permissions(){
 	GLOBAL $_REQUEST;
 	GLOBAL $_COOKIE;
 	if((!isset($_REQUEST['username']) || !isset($_REQUEST['token'])) && (!isset($_COOKIE['username']) || !isset($_COOKIE['token']))){
@@ -247,7 +251,7 @@ function authenticate_request(int $min_perms){
 			if($key['type'] == 0 && $key['subtype'] == 0){
 				// Now check user permissions and make sure everything is okie dokie
 				$user = get_user($key['user']);
-				return $user['perms'] >= $min_perms;
+				return $user['perms'];
 			}else{
 				return 0;
 			}
@@ -272,7 +276,7 @@ function authenticate_request(int $min_perms){
 		// Perms = -1 indicates failure
 		return 0;
 	}
-	return $perms >= $min_perms;
+	return $perms;
 }
 function get_username(){
 	// Must be in the same order as the authenticate_request function or authentication bugs can occur

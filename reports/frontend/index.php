@@ -1,0 +1,25 @@
+<?php
+	require_once $_SERVER['DOCUMENT_ROOT']."/reports/api/private/reports.php";
+
+	$result = authenticate_request(0);
+	if($result == 0){
+		force_login();
+	}
+?>
+
+<html>
+	<head>
+		<title>Internal Reports Services</title>
+		<link rel="stylesheet" type="text/css" href="/frontend/assets/css/main.css">
+		<link rel="stylesheet" type="text/css" href="assets/css/main.css">
+	</head>
+		<body>
+			<?php require("../../frontend/header.php");?>
+			<div class="content">
+				<ul>
+					<li><h3><a href="search_reports.php">Search Reports</a></h3></li>
+				</ul>
+			</div>
+		</body>
+</html>
+
