@@ -35,5 +35,8 @@ function req_get($name){
 function sanitize($data){
 	return htmlspecialchars($data);
 }
+function html_encode($data){
+	return str_replace("\n","<br>",str_replace("\t","&emsp;",$data));
+}
 
 ?>
