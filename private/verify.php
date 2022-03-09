@@ -24,6 +24,9 @@ function json_cont($json,$name){
 function json_cont_i($json,$name){
 	return isset($json->{$name}) && is_numeric($json->{$name});
 }
+function json_get($json,$name){
+	return sanitize($json->{$name});
+}
 
 function req_get($name){
 	GLOBAL $_REQUEST;
@@ -37,6 +40,15 @@ function sanitize($data){
 }
 function html_encode($data){
 	return str_replace("\n","<br>",str_replace("\t","&emsp;",$data));
+}
+function validate_name($name){
+	return preg_match("/^[a-zA-Z-' ]*$/",$name);
+}
+function validate_email($email){
+	return filter_var($email, FILTER_VALIDATE_EMAIL);
+}
+function validate_phone($phone){
+	return preg_match("/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/", $phone);
 }
 
 ?>
