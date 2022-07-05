@@ -222,14 +222,14 @@ function get_user_id($user){
 */
 
 function authenticate_request(int $min_perms){
-	return get_permissions() > $min_perms;
+	return get_permissions() >= $min_perms;
 }
 function get_permissions(){
 	GLOBAL $_REQUEST;
 	GLOBAL $_COOKIE;
 	if((!isset($_REQUEST['username']) || !isset($_REQUEST['token'])) && (!isset($_COOKIE['username']) || !isset($_COOKIE['token']))){
 		if(!isset($_REQUEST['key']) && !isset($_COOKIE['key'])){
-			return 0;
+			return -1;
 		}
 		if(isset($_REQUEST['key'])){
 			$key = $_REQUEST['key'];
@@ -253,11 +253,11 @@ function get_permissions(){
 				$user = get_user($key['user']);
 				return $user['perms'];
 			}else{
-				return 0;
+				return -1;
 			}
 		}else{
 			// Failed to validate key
-			return 0;
+			return -1;
 		}
 	}
 	// Try to authenticate using username and token
@@ -268,13 +268,13 @@ function get_permissions(){
 		$username = $_COOKIE['username'];
 		$token = $_COOKIE['token'];
 	}else{
-		return 0;
+		return -1;
 	}
 
 	$perms = login_verify($username,$token);
 	if($perms < 0){
 		// Perms = -1 indicates failure
-		return 0;
+		return -1;
 	}
 	return $perms;
 }
