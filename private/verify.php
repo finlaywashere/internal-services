@@ -42,13 +42,13 @@ function html_encode($data){
 	return str_replace("\n","<br>",str_replace("\t","&emsp;",$data));
 }
 function validate_name($name){
-	return preg_match("/^[a-zA-Z-' ]*$/",$name);
+	return preg_match("/^[a-zA-Z-' 0-9]*$/",$name);
 }
 function validate_email($email){
 	return filter_var($email, FILTER_VALIDATE_EMAIL);
 }
 function validate_phone($phone){
-	return preg_match("/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/", $phone);
+	return preg_match("/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/", $phone) || preg_match("/^[0-9]{10}$/",$phone);
 }
 
 ?>
