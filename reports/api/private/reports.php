@@ -87,7 +87,7 @@ function get_report($report_id, $perms){
 		return 0;
 	}
 
-	$return = array("user" => $row['user_id'],"title" => $row['report_title'],"body" => $row['report_body'],"date" => $row['report_date'],"type" => $row['report_type'],"security" => $security);
+	$return = array("user" => get_user($row['user_id']),"title" => $row['report_title'],"body" => $row['report_body'],"date" => $row['report_date'],"type" => $row['report_type'],"security" => $security);
 
 	$conn->close();
 	return $return;

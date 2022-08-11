@@ -34,7 +34,7 @@
 					<th>Date</th>
 					<th>Type</th>
 					<th>ID</th>
-					<th>User ID</th>
+					<th>User</th>
 					<th>Security</th>
 					<th>Title</th>	
 				</tr>
@@ -73,8 +73,7 @@ function search(){
 		var type = report.report['type'];
 		createElement(report_type_to_string(type),entry);
 		createElement("<a href=\"/reports/frontend/get_report.php?id="+reports2[i]+"\">"+reports2[i]+"</a>",entry);
-		createElement(reports2[i],entry);
-		createElement(report.report['user'],entry);
+		createElement(report.report.user['username'],entry);
 		createElement(report.report['security'],entry);
 		createElement(report.report['title'],entry);
 		table.appendChild(entry);

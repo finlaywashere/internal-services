@@ -23,3 +23,6 @@ function search_security_events(type,param){
 function get_security_event(id){
 	return json_request("/authentication/api/public/security/event_data.php", "event_id="+id);
 }
+function register_user(user,pass,perms,email){
+	return json_request("/authentication/api/public/auth/register.php","reg_username="+encode(user)+"&reg_password="+encode(pass)+"&reg_perms="+perms+"&reg_email="+encode(email));
+}
