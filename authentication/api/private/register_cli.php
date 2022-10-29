@@ -1,7 +1,5 @@
 <?php
 
-require_once "authentication.php";
-
 echo "Enter password: ";
 $password = readline();
 

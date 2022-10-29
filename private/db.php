@@ -18,4 +18,3 @@ function db_connect($dbname=""){
 }
 
 ?>
-
