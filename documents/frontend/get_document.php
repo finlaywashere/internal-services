@@ -1,5 +1,5 @@
 <?php
-	require_once $_SERVER['DOCUMENT_ROOT']."/reports/api/private/reports.php";
+	require_once $_SERVER['DOCUMENT_ROOT']."/documents/api/private/reports.php";
 
 	$result = authenticate_request(1);
 	if($result == 0){
@@ -20,21 +20,18 @@
 			<p style="color: red;" id="error"></p>
 		</div>
 		<div class="content">
-			<h2 id="resultHeader"></h2>
-			<h2 id="resultTitle"></h2>
-			<p id="resultBody"></p>
+			<object width="50%" height="75%" type="application/pdf" id="result">
+			</object>
 		</div>
 	</body>
 </html>
-<script src="/reports/frontend/assets/js/reports.js"></script>
+<script src="/documents/frontend/assets/js/reports.js"></script>
 <script>
 
 var viewButton = document.getElementById("view");
 var id = document.getElementById("report");
 var error = document.getElementById("error");
-var resultHeader = document.getElementById("resultHeader");
-var resultTitle = document.getElementById("resultTitle");
-var resultBody = document.getElementById("resultBody");
+var result = document.getElementById("result");
 viewButton.addEventListener("click",view);
 
 var params = getSearchParameters();
@@ -45,17 +42,12 @@ if(params.id != undefined){
 
 function view(){
 	var report = get_report(id.value);
-	resultHeader.innerHTML = "";
-	resultTitle.innerHTML = "";
-	resultBody.innerHTML = "";
 	if(!report.success){
 		console.log("Failed to retrieve data!");
 		error.innerHTML = "An error occurred while processing your request. Error: "+report.reason;
 		return;
 	}
-	resultHeader.innerHTML = "Report from user "+report.report.user+" on "+report.report.date;
-	resultTitle.innerHTML = report.report.title;
-	resultBody.innerHTML = report.report.body;
+	result.data = "data:application/pdf,base64,"+report.report['document'];
 }
 
 </script>

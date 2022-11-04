@@ -50,8 +50,8 @@ function json_request(url,args){
 
 
 function get_reports(type,param){
-	return json_request("/reports/api/public/get_reports.php","search_type="+type+"&search_param="+encode(param));
+	return json_request("/documents/api/public/get_documents.php","search_type="+type+"&search_param="+encode(param));
 }
 function get_report(id){
-	return json_request("/reports/api/public/get_report.php","report_id="+id);
+	return json_request("/documents/api/public/get_document.php","document_id="+id);
 }

@@ -1,5 +1,5 @@
 <?php
-	require_once $_SERVER['DOCUMENT_ROOT']."/reports/api/private/reports.php";
+	require_once $_SERVER['DOCUMENT_ROOT']."/documents/api/private/reports.php";
 
 	$result = authenticate_request(1);
 	if($result == 0){
@@ -42,7 +42,7 @@
 		</div>
 	</body>
 </html>
-<script src="/reports/frontend/assets/js/reports.js"></script>
+<script src="/documents/frontend/assets/js/reports.js"></script>
 <script>
 
 var searchButton = document.getElementById("search");
@@ -72,7 +72,7 @@ function search(){
 		createElement(report.report['date'],entry);
 		var type = report.report['type'];
 		createElement(report_type_to_string(type),entry);
-		createElement("<a href=\"/reports/frontend/get_report.php?id="+reports2[i]+"\">"+reports2[i]+"</a>",entry);
+		createElement("<a href=\"/documents/frontend/get_document.php?id="+reports2[i]+"\">"+reports2[i]+"</a>",entry);
 		createElement(report.report.user['username'],entry);
 		createElement(report.report['security'],entry);
 		createElement(report.report['title'],entry);

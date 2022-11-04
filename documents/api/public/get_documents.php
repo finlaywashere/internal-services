@@ -2,7 +2,7 @@
 
 header('Content-Type: application/json');
 
-require_once $_SERVER['DOCUMENT_ROOT']."/reports/api/private/reports.php";
+require_once $_SERVER['DOCUMENT_ROOT']."/documents/api/private/reports.php";
 
 $auth = authenticate_request(1);
 if(!$auth){
@@ -22,7 +22,7 @@ if(req_param_i('search_limit')){
 $stype = req_get('search_type');
 $param = req_get('search_param');
 
-$reports = reports_search($stype, $param,$offset,$limit);
+$reports = document_search($stype, $param,$offset,$limit);
 if($reports === NULL){
     die(json_encode(array('success' => false, 'reason' => 'invalid_type')));
 }
