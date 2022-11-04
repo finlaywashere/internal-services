@@ -17,7 +17,7 @@
 			<?php require("../../frontend/header.php");?>
 			<div class="content">
 				<ul>
-					<li><h3><a href="search_reports.php">Search Reports</a></h3></li>
+					<li><h3><a href="search_documents.php">Search Documents</a></h3></li>
 				</ul>
 			</div>
 		</body>

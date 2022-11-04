@@ -41,13 +41,14 @@ if(params.id != undefined){
 }
 
 function view(){
+	result.data = "";
 	var report = get_report(id.value);
 	if(!report.success){
 		console.log("Failed to retrieve data!");
 		error.innerHTML = "An error occurred while processing your request. Error: "+report.reason;
 		return;
 	}
-	result.data = "data:application/pdf,base64,"+report.report['document'];
+	result.data = "/documents/api/public/get_document_raw.php?document_id="+id.value;
 }
 
 </script>
