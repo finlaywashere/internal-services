@@ -16,5 +16,8 @@ function db_connect($dbname=""){
     }
     return $conn;
 }
+function sql_error($conn){
+	error_log("SQL Error: ".mysqli_error($conn), 3, "/var/log/php.log");
+}
 
 ?>
