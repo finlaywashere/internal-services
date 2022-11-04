@@ -4,8 +4,8 @@ require_once('fpdf.php');
 
 class PDF extends FPDF{
 	
-	protected int $security;
-	protected string $user;
+	protected $security;
+	protected $user;
 	function __construct($security, $user){
 		parent::__construct();
 		$this->security = $security;
