@@ -117,7 +117,7 @@ function generate_report($title, $security, $user, $body){
 	$pdf->Ln();
 	$pdf->Ln();
 	$pdf->SetFont('Times', 'B', 12);
-	$pdf->Cell(0,10,$body,0,0,'C');
+	$pdf->Multicell(0,10,str_replace("\t", "    ",$body),0,'C');
 	return base64_encode($pdf->Output('S'));
 }
 
