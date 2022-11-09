@@ -4,10 +4,13 @@ require_once $_SERVER['DOCUMENT_ROOT'] . "/authentication/api/private/permission
 
 function authenticate_request_other($uperms, $permission){
 	if(is_numeric($permission)){
-		return get_permissions() >= $permission;
+		return $uperms >= $permission;
 	}
 	global $permission_map;
-
+	
+	if(!array_key_exists($permission,$permission_map)){
+		return $uperms >= 100; // Default in case permissions not found
+	}
 	return $uperms >= $permission_map[$permission];
 }
 
