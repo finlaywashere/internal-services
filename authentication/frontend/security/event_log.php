@@ -1,7 +1,7 @@
 <?php
     require_once "../../api/private/authentication.php";
 
-    $result = authenticate_request(2);
+    $result = authenticate_request("authentication/events");
     if($result == 0){
     	force_login();
 	}

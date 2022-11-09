@@ -217,13 +217,6 @@ function get_user_id($user){
 	$conn->close();
 	return $id;
 }
-/**
-    Helper function to easily authenticate user and check permission levels
-*/
-
-function authenticate_request(int $min_perms){
-	return get_permissions() >= $min_perms;
-}
 function get_permissions(){
 	GLOBAL $_REQUEST;
 	GLOBAL $_COOKIE;

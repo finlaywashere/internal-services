@@ -2,7 +2,7 @@
 	require_once "private/authentication.php";
 	require_once "private/config.php";
 	
-	$result = authenticate_request(0);
+	$result = authenticate_request("main");
 	if($result == 0){
 		force_login();
 	}

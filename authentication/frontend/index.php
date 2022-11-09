@@ -1,7 +1,7 @@
 <?php
 	require_once "../api/private/authentication.php";
 
-	$result = authenticate_request(0);
+	$result = authenticate_request("authentication");
 	if($result == 0){
 		force_login();
 	}
@@ -19,7 +19,7 @@
 		<ul>
 			<li><h3><a href="auth/change_password.php">Change Password</a></h3></li>
 			<?php
-				$result = authenticate_request(100);
+				$result = authenticate_request("authentication/admin");
 				if($result){
 					echo "<li><h3><a href=\"auth/register.php\">Register</a></h3></li>";
 				}

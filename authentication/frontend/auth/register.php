@@ -1,7 +1,7 @@
 <?php
 	require_once "../../api/private/authentication.php";
 
-	$result = authenticate_request(100);
+	$result = authenticate_request("authentication/admin");
 	if($result == 0){
 		force_login();
 	}

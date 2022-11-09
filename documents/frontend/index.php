@@ -1,7 +1,7 @@
 <?php
 	require_once $_SERVER['DOCUMENT_ROOT']."/documents/api/private/reports.php";
 
-	$result = authenticate_request(0);
+	$result = authenticate_request("documents");
 	if($result == 0){
 		force_login();
 	}
