@@ -21,8 +21,9 @@ function verify_creds($user, $password){
 		return 0;
 	}
 	$stmt = $conn->prepare("SELECT `user_password`, `user_id` FROM `users` WHERE `user_username`=?;");
+	if(!$stmt){ sql_error($conn); }
 	$stmt->bind_param("s",$user);
-	$stmt->execute();
+	if(!$stmt->execute()){ sql_error($conn); }
 
 	$result = $stmt->get_result();
 	if(!mysqli_num_rows($result)){
@@ -51,11 +52,12 @@ function login($user,$password){
 	}
 	$token = generate_token();
 	$stmt = $conn->prepare("INSERT INTO `tokens` (user_id,token_data,token_expiry) VALUES (?,?,FROM_UNIXTIME(?));");
+	if(!$stmt){ sql_error($conn); }
 	GLOBAL $token_expiry;
 	$expiry = time() + $token_expiry;
 
 	$stmt->bind_param("ssi",$id,$token,$expiry);
-	$stmt->execute();
+	if(!$stmt->execute()){ sql_error($conn); }
 
 	$conn->close();
 	return $token;
@@ -66,13 +68,15 @@ function revoke_tokens($user){
 		return 0;
 	}
 	$stmt = $conn->prepare("SELECT `user_id` FROM `users` WHERE `user_username`=?;");
+	if(!$stmt){ sql_error($conn); }
 	$stmt->bind_param("s",$user);
-	$stmt->execute();
+	if(!$stmt->execute()){ sql_error($conn); }
 	$row = $stmt->get_result()->fetch_assoc();
 	$id = $row['user_id'];
 	$stmt = $conn->prepare("DELETE FROM `tokens` WHERE `user_id`=?;");
+	if(!$stmt){ sql_error($conn); }
 	$stmt->bind_param("i",$id);
-	$stmt->execute();
+	if(!$stmt->execute()){ sql_error($conn); }
 	$conn->close();
 	return 1;
 }
@@ -82,13 +86,15 @@ function revoke_token($user, $token){
 		return 0;
 	}
 	$stmt = $conn->prepare("SELECT `user_id` FROM `users` WHERE `user_username`=?;");
+	if(!$stmt){ sql_error($conn); }
 	$stmt->bind_param("s",$user);
-	$stmt->execute();
+	if(!$stmt->execute()){ sql_error($conn); }
 	$row = $stmt->get_result()->fetch_assoc();
 	$id = $row['user_id'];
 	$stmt = $conn->prepare("DELETE FROM `tokens` WHERE `user_id`=? AND `token_data`=?;");
+	if(!$stmt){ sql_error($conn); }
 	$stmt->bind_param("is",$id,$token);
-	$stmt->execute();
+	if(!$stmt->execute()){ sql_error($conn); }
 	$conn->close();
 	return 1;
 }
@@ -106,8 +112,9 @@ function change_password($user,$password){
 	}
 	$hash = password_hash($password,PASSWORD_DEFAULT);
 	$stmt = $conn->prepare("UPDATE `users` SET `user_password`=? WHERE `user_username`=?;");
+	if(!$stmt){ sql_error($conn); }
 	$stmt->bind_param("ss",$hash,$user);
-	$stmt->execute();
+	if(!$stmt->execute()){ sql_error($conn); }
 	$conn->close();
 	if(!revoke_tokens($user)){
 		return 0;
@@ -121,8 +128,9 @@ function register($user,$password,$email,$perms){
 	}
 	$hash = password_hash($password,PASSWORD_DEFAULT);
 	$stmt = $conn->prepare("INSERT INTO `users` (user_username,user_password,user_email,user_perms) VALUES (?,?,?,?);");
+	if(!$stmt){ sql_error($conn); }
 	$stmt->bind_param("sssi",$user,$hash,$email,$perms);
-	$stmt->execute();
+	if(!$stmt->execute()){ sql_error($conn); }
 	$conn->close();
 	return 1;
 }
@@ -132,8 +140,9 @@ function login_verify($user_name,$token){
 		return -1;
 	}
 	$stmt = $conn->prepare("SELECT `user_perms`,`user_id` FROM `users` WHERE `user_username`=?;");
+	if(!$stmt){ sql_error($conn); }
 	$stmt->bind_param("s",$user_name);
-	$stmt->execute();
+	if(!$stmt->execute()){ sql_error($conn); }
 	$result = $stmt->get_result();
 	if(!mysqli_num_rows($result)){
 		$conn->close();
@@ -145,8 +154,9 @@ function login_verify($user_name,$token){
 	$user = $row['user_id'];
 
 	$stmt = $conn->prepare("SELECT `token_data` FROM `tokens` WHERE `user_id`=? AND `token_expiry` > now() AND `token_type` = 0;");
+	if(!$stmt){ sql_error($conn); }
 	$stmt->bind_param("i",$user);
-	$stmt->execute();
+	if(!$stmt->execute()){ sql_error($conn); }
 
 	$result = $stmt->get_result();
 
@@ -180,8 +190,9 @@ function get_user($id){
 		return NULL;
 	}
 	$stmt = $conn->prepare("SELECT * FROM users WHERE user_id=?;");
+	if(!$stmt){ sql_error($conn); }
 	$stmt->bind_param("i",$id);
-	$stmt->execute();
+	if(!$stmt->execute()){ sql_error($conn); }
 
 	$result = $stmt->get_result();
 	if(!mysqli_num_rows($result)){
@@ -204,8 +215,9 @@ function get_user_id($user){
 		return 0;
 	}
 	$stmt = $conn->prepare("SELECT user_id FROM users WHERE user_username=?;");
+	if(!$stmt){ sql_error($conn); }
 	$stmt->bind_param("s",$user);
-	$stmt->execute();
+	if(!$stmt->execute()){ sql_error($conn); }
 
 	$result = $stmt->get_result();
 	if(!mysqli_num_rows($result)){

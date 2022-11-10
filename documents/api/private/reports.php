@@ -11,9 +11,10 @@ function create_report($user, $title, $body, $type = 0, $security = 0){
 		return 0;
 	}
 	$stmt = $conn->prepare("INSERT INTO documents (user_id,document_title,document_type,document_security, document_data) VALUES (?,?,?,?,?);");
+	if(!$stmt){ sql_error($conn); }
 	$stmt->bind_param("isiib",$user,$title,$type,$security,$report);
 	$stmt->send_long_data(4, $report);
-	$stmt->execute();
+	if(!$stmt->execute()){ sql_error($conn); }
 	$id = $conn->insert_id;
 	$conn->close();
 	return $id;
@@ -28,34 +29,40 @@ function document_search($stype, $value, $offset, $limit){
 	if($stype == 1){
 		// Search by user
 		$stmt = $conn->prepare("SELECT document_id FROM documents WHERE user_id = ? AND user_id > ? LIMIT ?;");
+		if(!$stmt){ sql_error($conn); }
 		$stmt->bind_param("iii",$value,$offset,$limit);
 	}else if($stype == 2){
 		// Search by date
 		$stmt = $conn->prepare("SELECT document_id FROM documents WHERE DATE(document_date) = ? AND user_id > ? LIMIT ?;");
+		if(!$stmt){ sql_error($conn); }
 		$stmt->bind_param("sii",$value,$offset,$limit);
 	}else if($stype == 3){
 		// Search by description
 		$value = "%".$value."%";
 		$stmt = $conn->prepare("SELECT document_id FROM documents WHERE document_desc LIKE ? AND user_id > ? LIMIT ?;");
+		if(!$stmt){ sql_error($conn); }
 		$stmt->bind_param("sii",$value,$offset,$limit);
 	}else if($stype == 4){
 		// Search by title
 		$value = "%".$value."%";
 		$stmt = $conn->prepare("SELECT document_id FROM documents WHERE document_title LIKE ? AND user_id > ? LIMIT ?;");
+		if(!$stmt){ sql_error($conn); }
 		$stmt->bind_param("sii",$value,$offset,$limit);
 	}else if($stype == 5){
 		// Search by type
 		$stmt = $conn->prepare("SELECT document_id FROM documents WHERE document_type = ? AND user_id > ? LIMIT ?;");
+		if(!$stmt){ sql_error($conn); }
 		$stmt->bind_param("sii",$value,$offset,$limit);
 	}else if($stype == 6){
 		// Search by id
 		$stmt = $conn->prepare("SELECT document_id FROM documents WHERE document_id=? AND user_id > ? LIMIT ?;");
+		if(!$stmt){ sql_error($conn); }
 		$stmt->bind_param("iii",$value,$offset,$limit);
 	}else{
 		$conn->close();
 		return NULL;
 	}
-	$stmt->execute();
+	if(!$stmt->execute()){ sql_error($conn); }
 	$result = $stmt->get_result();
 	if(!mysqli_num_rows($result)){
 		return array();
@@ -74,8 +81,9 @@ function get_document($document_id, $perms){
 		return 0;
 	}
 	$stmt = $conn->prepare("SELECT * FROM `documents` WHERE `document_id`=?;");
+	if(!$stmt){ sql_error($conn); }
 	$stmt->bind_param("i",$document_id);
-	$stmt->execute();
+	if(!$stmt->execute()){ sql_error($conn); }
 
 	$result = $stmt->get_result();
 	if(!mysqli_num_rows($result)){

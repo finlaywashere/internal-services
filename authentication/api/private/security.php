@@ -17,8 +17,9 @@ function security_event($type, $actor, $source, $info, $extra, $ip){
 		return 0;
 	}
 	$stmt = $conn->prepare("INSERT INTO security_events (actor_id,event_type,event_source,event_info,event_extra,event_ip) VALUES (?,?,?,?,?,?)");
+	if(!$stmt){ sql_error($conn); }
 	$stmt->bind_param("iissss",$actor,$type,$source,$info,$extra,$ip);
-	$stmt->execute();
+	if(!$stmt->execute()){ sql_error($conn); }
 	$conn->close();
 	return 1;
 }
@@ -37,43 +38,51 @@ function search_security_events($stype,$value){
 		// Search by source
 		$value = "%".$value."%";
 		$stmt = $conn->prepare("SELECT event_id FROM security_events WHERE event_source LIKE ?;");
+		if(!$stmt){ sql_error($conn); }
 		$stmt->bind_param("s",$value);
 	}else if($stype == 2){
 		// Search by date
 		$stmt = $conn->prepare("SELECT event_id FROM security_events WHERE DATE(event_time) = ?;");
+		if(!$stmt){ sql_error($conn); }
 		$stmt->bind_param("s",$value);
 	}else if($stype == 3){
 		// Search by contents
 		$value = "%".$value."%";
 		$stmt = $conn->prepare("SELECT event_id FROM security_events WHERE journal_info LIKE ?;");
+		if(!$stmt){ sql_error($conn); }
 		$stmt->bind_param("s",$value);
 	}else if($stype == 4){
 		// Search by event type
 		$stmt = $conn->prepare("SELECT event_id FROM security_events WHERE event_type = ?;");
+		if(!$stmt){ sql_error($conn); }
 		$stmt->bind_param("i",$value);
 	}else if($stype == 5){
 		// Search by actor
 		$stmt = $conn->prepare("SELECT event_id FROM security_events WHERE actor_id = ?;");
+		if(!$stmt){ sql_error($conn); }
 		$stmt->bind_param("i",$value);
 	}else if($stype == 6){
 		// Search by extra
 		$value = "%".$value."%";
 		$stmt = $conn->prepare("SELECT event_id FROM security_events WHERE event_extra LIKE ?;");
+		if(!$stmt){ sql_error($conn); }
 		$stmt->bind_param("s",$value);
 	}else if($stype == 7){
 		// Search by event id
 		$stmt = $conn->prepare("SELECT event_id FROM security_events WHERE event_id = ?;");
+		if(!$stmt){ sql_error($conn); }
 		$stmt->bind_param("i",$value);
 	}else if($stype == 8){
 		// Search by ip
 		$value = "%".$value."%";
 		$stmt = $conn->prepare("SELECT event_id FROM security_events WHERE event_ip LIKE ?;");
+		if(!$stmt){ sql_error($conn); }
 		$stmt->bind_param("s",$value);
 	}else{
 		$conn->close();
 		return NULL;
 	}
-	$stmt->execute();
+	if(!$stmt->execute()){ sql_error($conn); }
 	$result = $stmt->get_result();
 	if(!mysqli_num_rows($result)){
 		return array();
@@ -96,8 +105,9 @@ function get_security_event($id){
 		return NULL;
 	}
 	$stmt = $conn->prepare("SELECT * FROM security_events WHERE event_id = ?;");
+	if(!$stmt){ sql_error($conn); }
 	$stmt->bind_param("i",$id);
-	$stmt->execute();
+	if(!$stmt->execute()){ sql_error($conn); }
 	$result = $stmt->get_result();
 	if(!mysqli_num_rows($result)){
 		return NULL;
@@ -151,8 +161,9 @@ function create_key($user, $type, $subtype, $security, $auth, $contents){
 		$auth_value = password_hash($auth,PASSWORD_DEFAULT);
 	}
 	$stmt = $conn->prepare("INSERT INTO security_keys (user_id, key_type, key_subtype, key_security, key_auth, key_contents) VALUES (?,?,?,?,?,?);");
+	if(!$stmt){ sql_error($conn); }
 	$stmt->bind_param("iiiiss",$user,$type,$subtype,$security,$auth_value,$contents);
-	$stmt->execute();
+	if(!$stmt->execute()){ sql_error($conn); }
 	$conn->close();
 	return 1;
 }
@@ -163,8 +174,9 @@ function destroy_key($key){
 		return 0;
 	}
 	$stmt = $conn->prepare("DELETE FROM security_keys WHERE key_contents=?;");
+	if(!$stmt){ sql_error($conn); }
 	$stmt->bind_param("s",$key);
-	$stmt->execute();
+	if(!$stmt->execute()){ sql_error($conn); }
 	$conn->close();
 	return 1;
 }
@@ -174,8 +186,9 @@ function revoke_keys($user){
 		return 0;
 	}
 	$stmt = $conn->prepare("DELETE FROM security_keys WHERE user_id=?;");
+	if(!$stmt){ sql_error($conn); }
 	$stmt->bind_param("i",$user);
-	$stmt->execute();
+	if(!$stmt->execute()){ sql_error($conn); }
 	$conn->close();
 	return 1;
 }
@@ -198,8 +211,9 @@ function verify_key($key, $user, $auth, $device){
 		return 1;
 	}
 	$stmt = $conn->prepare("SELECT user_id,key_security,key_auth FROM security_keys WHERE key_contents=?;");
+	if(!$stmt){ sql_error($conn); }
 	$stmt->bind_param("s",$key);
-	$stmt->execute();
+	if(!$stmt->execute()){ sql_error($conn); }
 	$result = $stmt->get_result();
 	if(!mysqli_num_rows($result)){
 		$conn->close();
@@ -235,8 +249,9 @@ function get_key($key){
 		return -1;
 	}
 	$stmt = $conn->prepare("SELECT * FROM security_keys WHERE key_contents=?;");
+	if(!$stmt){ sql_error($conn); }
 	$stmt->bind_param("s",$key);
-	$stmt->execute();
+	if(!$stmt->execute()){ sql_error($conn); }
 	$result = $stmt->get_result();
 	if(!mysqli_num_rows($result)){
 		$conn->close();
@@ -267,8 +282,9 @@ function create_override($key, $transaction, $source, $field, $data, $reason){
 		return 1;
 	}
 	$stmt = $conn->prepare("INSERT INTO `security_overrides` (key_id,override_reason,transaction_id,transaction_source,transaction_field,transaction_data) VALUES (?,?,?,?,?,?);");
+	if(!$stmt){ sql_error($conn); }
 	$stmt->bind_param("isisss",$id,$reason,$transaction,$source,$field,$date);
-	$stmt->execute();
+	if(!$stmt->execute()){ sql_error($conn); }
 
 	$conn->close();
 	return 0;
@@ -289,8 +305,9 @@ function retrieve_overrides($transaction){
 		return NULL;
 	}
 	$stmt = $conn->prepare("SELECT * FROM security_overrides WHERE transaction_id=? AND override_expiry > NOW();");
+	if(!$stmt){ sql_error($conn); }
 	$stmt->bind_param("i",$transaction);
-	$stmt->execute();
+	if(!$stmt->execute()){ sql_error($conn); }
 
 	$result = $stmt->get_result();
 	if(!mysqli_num_rows($result)){
@@ -301,8 +318,9 @@ function retrieve_overrides($transaction){
 		array_push($return,array('key_id' => $row['key_id'], 'reason' => $row['override_reason'], 'source' => $row['transaction_source'], 'field' => $row['transaction_field'], 'data' => $row['transaction_data']));
 	}
 	$stmt = $conn->prepare("DELETE FROM security_overrides WHERE transaction_id=?;");
+	if(!$stmt){ sql_error($conn); }
 	$stmt->bind_param("i",$transaction);
-	$stmt->execute();
+	if(!$stmt->execute()){ sql_error($conn); }
 	$conn->close();
 	return $return;
 }
