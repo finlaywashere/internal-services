@@ -15,10 +15,10 @@
 	</head>
 		<body>
 			<?php require("../../frontend/header.php");?>
-			<div class="content">
-				<ul>
-					<li><h3><a href="search_documents.php">Search Documents</a></h3></li>
-				</ul>
+			<div class="container">
+				<div class="row justify-content-center text-center">
+					<div class="col"><h3><a class="btn btn-secondary" href="search_documents.php">Search Documents</a></h3></div>
+				</div>
 			</div>
 		</body>
 </html>

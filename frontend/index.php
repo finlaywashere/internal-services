@@ -8,19 +8,26 @@
 	}
 ?>
 <html>
-<head>
-<title>Internal Services</title>
-<link rel="stylesheet" type="text/css" href="assets/css/main.css">
-</head>
+	<head>
+		<title>Internal Services</title>
+		<link rel="stylesheet" type="text/css" href="assets/css/main.css">
+	</head>
 <body>
 <?php require("header.php")?>
-<div class="content">
-	<ul>
-		<li>
-			<h2>Message of the day</h2>
-			<p><?php require("../data/motd.txt");?></p>
-		</li>
-	</ul>
-</div>
+	<div class="container">
+		<div class="row justify-content-center text-center">
+			<div class="col">
+				<h1>Internal Services</h1>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col">
+				<div class="p-3 col-sm-4 border bg-light">
+					<h2>Message of the day</h2>
+					<p><?php require("../data/motd.txt");?></p>
+				</div>
+			</div>
+		</div>
+	</div>
 </body>
 </html>
