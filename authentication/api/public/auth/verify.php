@@ -4,7 +4,7 @@ header('Content-Type: application/json');
 
 require_once "../../private/authentication.php";
 
-if(!req_param_i("min_perms")){
+if(!req_param("min_perms")){
 	http_response_code(400);
 	die(json_encode(array('success' => false, 'reason' => 'invalid_request')));
 }
