@@ -14,9 +14,7 @@ if(!req_param('document_id')){
 }
 $id = req_get('document_id');
 
-$perms = get_permissions();
-
-$report = get_document($id, $perms);
+$report = get_document($id);
 if(!$report){
 	http_response_code(400);
     die(json_encode(array('success' => false, 'reason' => 'invalid_id')));

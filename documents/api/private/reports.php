@@ -3,9 +3,13 @@ require_once $_SERVER['DOCUMENT_ROOT'] . "/private/db.php";
 require_once $_SERVER['DOCUMENT_ROOT'] . "/private/verify.php";
 require_once $_SERVER['DOCUMENT_ROOT'] . "/private/authentication.php";
 require_once $_SERVER['DOCUMENT_ROOT'] . "/documents/api/private/conversion.php";
+require_once $_SERVER['DOCUMENT_ROOT'] . "/documents/api/private/scan.php";
 
 function create_report($user, $title, $body, $type = 0, $security = 0){
 	$report = generate_report($title, $security, get_user($user)['username'], $body);
+	return create_document($user,$title,$type,$security,$report);
+}
+function create_document($user,$title,$type,$security,$report){
 	$conn = db_connect();
 	if(!$conn){
 		return 0;
@@ -75,7 +79,7 @@ function document_search($stype, $value, $offset, $limit){
 	return $return;
 }
 
-function get_document($document_id, $perms){
+function get_document($document_id){
 	$conn = db_connect();
 	if(!$conn){
 		return 0;
@@ -94,12 +98,11 @@ function get_document($document_id, $perms){
 	$security = $row['document_security'];
 	
 	// Validate that user has access to report
-	if($security > $perms){
+	if(!authenticate_request($security)){
 		return 0;
 	}
-
 	$return = array("user" => get_user($row['user_id']),"title" => $row['document_title'],"desc" => $row['document_desc'],"date" => $row['document_date'],"type" => $row['document_type'],"security" => $security, "document" => $row['document_data']);
-
+	echo "4";
 	$conn->close();
 	return $return;
 }

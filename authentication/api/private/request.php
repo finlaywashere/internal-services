@@ -43,18 +43,16 @@ function authenticate_request_other_remote($uperms, $permission, $force_local){
 			if($key_a != NULL){
 				$params['key_auth'] = $key_a;
 			}
-			echo "Sending";
 			$url = $auth_url."?".http_build_query($params);
 			curl_setopt($c, CURLOPT_URL, $url);
-			curl_setopt($c, CURLOPT_HEADER, TRUE);
+			curl_setopt($c, CURLOPT_SSL_VERIFYPEER, true);
+			curl_setopt($c, CURLOPT_SSL_VERIFYHOST, 2);
 			curl_setopt($c, CURLOPT_RETURNTRANSFER, TRUE);
 			$result = curl_exec($c);
-			echo "Result";
 			if(!$result){
 				return false;
 			}
 			$json = json_decode($result);
-			echo $json['success'];
 			return $json['success'];
 		}else{
 			error_log("Authentication Error: No authentication method is configured and local auth is forced", 3, "/var/log/php.log");

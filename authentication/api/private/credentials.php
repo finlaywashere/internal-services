@@ -41,26 +41,47 @@ function verify_creds($user, $password){
 }
 
 function login($user,$password){
-	$conn = db_connect();
-	if(!$conn){
-		return 0;
-	}
-	$id = verify_creds($user,$password);
-	if(!$id){
+	global $remote_auth;
+	if(!$remote_auth){
+		$conn = db_connect();
+		if(!$conn){
+			return 0;
+		}
+		$id = verify_creds($user,$password);
+		if(!$id){
+			$conn->close();
+			return 0;
+		}
+		$token = generate_token();
+		$stmt = $conn->prepare("INSERT INTO `tokens` (user_id,token_data,token_expiry) VALUES (?,?,FROM_UNIXTIME(?));");
+		if(!$stmt){ sql_error($conn); }
+		GLOBAL $token_expiry;
+		$expiry = time() + $token_expiry;
+
+		$stmt->bind_param("ssi",$id,$token,$expiry);
+		if(!$stmt->execute()){ sql_error($conn); }
+	
 		$conn->close();
-		return 0;
+		return $token;
+	}else{
+		global $login_url;
+		$c = curl_init();
+		$url = $login_url."?".http_build_query(array("username" => $user, "password" => $password));
+		curl_setopt($c, CURLOPT_URL, $url);
+		curl_setopt($c, CURLOPT_SSL_VERIFYPEER, true);
+		curl_setopt($c, CURLOPT_SSL_VERIFYHOST, 2);
+		curl_setopt($c, CURLOPT_RETURNTRANSFER, TRUE);
+		$result = curl_exec($c);
+		if(!$result){
+			return 0;
+		}
+		echo $result;
+		$json = json_decode($result);
+		if(!$json['success']){
+			return 0;
+		}
+		return $json['token'];
 	}
-	$token = generate_token();
-	$stmt = $conn->prepare("INSERT INTO `tokens` (user_id,token_data,token_expiry) VALUES (?,?,FROM_UNIXTIME(?));");
-	if(!$stmt){ sql_error($conn); }
-	GLOBAL $token_expiry;
-	$expiry = time() + $token_expiry;
-
-	$stmt->bind_param("ssi",$id,$token,$expiry);
-	if(!$stmt->execute()){ sql_error($conn); }
-
-	$conn->close();
-	return $token;
 }
 function revoke_tokens($user){
 	$conn = db_connect();
@@ -230,6 +251,10 @@ function get_user_id($user){
 	return $id;
 }
 function get_permissions(){
+	GLOBAL $remote_auth;
+	if($remote_auth){
+		return -2;
+	}
 	GLOBAL $_REQUEST;
 	GLOBAL $_COOKIE;
 	if((!isset($_REQUEST['username']) || !isset($_REQUEST['token'])) && (!isset($_COOKIE['username']) || !isset($_COOKIE['token']))){
