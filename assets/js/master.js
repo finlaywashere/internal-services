@@ -50,11 +50,12 @@ function json_request(url,args){
 	xmlhttp.open("POST", url, false);
 	xmlhttp.addEventListener("load",function() {
 		if (xmlhttp.readyState != 4) return;
-		if (xmlhttp.status==200) {
+		try{
 			var json = JSON.parse(this.responseText);
 			result = json;
 			return null;
-		}else{
+		}catch(err){
+			result = null;
 			return null;
 		}
 	});
