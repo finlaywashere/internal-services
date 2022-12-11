@@ -257,19 +257,20 @@ function get_permissions(){
 	}
 	GLOBAL $_REQUEST;
 	GLOBAL $_COOKIE;
-	if((!isset($_REQUEST['username']) || !isset($_REQUEST['token'])) && (!isset($_COOKIE['username']) || !isset($_COOKIE['token']))){
+	$is_api = strpos(getcwd(), 'api/') != 0;
+	if((!isset($_REQUEST['username']) || !isset($_REQUEST['token'])) && $is_api && (!isset($_COOKIE['username']) || !isset($_COOKIE['token']))){
 		if(!isset($_REQUEST['key']) && !isset($_COOKIE['key'])){
 			return -1;
 		}
 		if(isset($_REQUEST['key'])){
 			$key = $_REQUEST['key'];
-		}else{
+		}else if(!$is_api){
 			$key = $_COOKIE['key'];
 		}
 		$auth = "";
 		if(isset($_REQUEST['key_auth'])){
 			$auth = $_REQUEST['key_auth'];
-		}else if(isset($_COOKIE['key_auth'])){
+		}else if(!$is_api && isset($_COOKIE['key_auth'])){
 			$auth = $_COOKIE['key_auth'];
 		}
 		// Try to authenticate using key
@@ -294,7 +295,7 @@ function get_permissions(){
 	if(isset($_REQUEST['username']) && isset($_REQUEST['token'])){
 		$username = $_REQUEST['username'];
 		$token = $_REQUEST['token'];
-	} else if(isset($_COOKIE['username']) && isset($_COOKIE['token'])){
+	} else if(!$is_api && isset($_COOKIE['username']) && isset($_COOKIE['token'])){
 		$username = $_COOKIE['username'];
 		$token = $_COOKIE['token'];
 	}else{
