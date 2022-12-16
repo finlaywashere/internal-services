@@ -27,6 +27,7 @@ function report_type_to_string(type){
 	if(type === 0){
 		return "UNK";
 	}
+	return "UNK";
 }
 
 function json_request(url,args){

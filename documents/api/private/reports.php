@@ -32,34 +32,34 @@ function document_search($stype, $value, $offset, $limit){
 	$stmt = NULL;
 	if($stype == 1){
 		// Search by user
-		$stmt = $conn->prepare("SELECT document_id FROM documents WHERE user_id = ? AND user_id > ? LIMIT ?;");
+		$stmt = $conn->prepare("SELECT document_id FROM documents WHERE user_id = ? AND document_id > ? LIMIT ?;");
 		if(!$stmt){ sql_error($conn); }
 		$stmt->bind_param("iii",$value,$offset,$limit);
 	}else if($stype == 2){
 		// Search by date
-		$stmt = $conn->prepare("SELECT document_id FROM documents WHERE DATE(document_date) = ? AND user_id > ? LIMIT ?;");
+		$stmt = $conn->prepare("SELECT document_id FROM documents WHERE DATE(document_date) = ? AND document_id > ? LIMIT ?;");
 		if(!$stmt){ sql_error($conn); }
 		$stmt->bind_param("sii",$value,$offset,$limit);
 	}else if($stype == 3){
 		// Search by description
 		$value = "%".$value."%";
-		$stmt = $conn->prepare("SELECT document_id FROM documents WHERE document_desc LIKE ? AND user_id > ? LIMIT ?;");
+		$stmt = $conn->prepare("SELECT document_id FROM documents WHERE document_desc LIKE ? AND document_id > ? LIMIT ?;");
 		if(!$stmt){ sql_error($conn); }
 		$stmt->bind_param("sii",$value,$offset,$limit);
 	}else if($stype == 4){
 		// Search by title
 		$value = "%".$value."%";
-		$stmt = $conn->prepare("SELECT document_id FROM documents WHERE document_title LIKE ? AND user_id > ? LIMIT ?;");
+		$stmt = $conn->prepare("SELECT document_id FROM documents WHERE document_title LIKE ? AND document_id > ? LIMIT ?;");
 		if(!$stmt){ sql_error($conn); }
 		$stmt->bind_param("sii",$value,$offset,$limit);
 	}else if($stype == 5){
 		// Search by type
-		$stmt = $conn->prepare("SELECT document_id FROM documents WHERE document_type = ? AND user_id > ? LIMIT ?;");
+		$stmt = $conn->prepare("SELECT document_id FROM documents WHERE document_type = ? AND document_id > ? LIMIT ?;");
 		if(!$stmt){ sql_error($conn); }
 		$stmt->bind_param("sii",$value,$offset,$limit);
 	}else if($stype == 6){
 		// Search by id
-		$stmt = $conn->prepare("SELECT document_id FROM documents WHERE document_id=? AND user_id > ? LIMIT ?;");
+		$stmt = $conn->prepare("SELECT document_id FROM documents WHERE document_id=? AND document_id > ? LIMIT ?;");
 		if(!$stmt){ sql_error($conn); }
 		$stmt->bind_param("iii",$value,$offset,$limit);
 	}else{
@@ -102,7 +102,6 @@ function get_document($document_id){
 		return 0;
 	}
 	$return = array("user" => get_user($row['user_id']),"title" => $row['document_title'],"desc" => $row['document_desc'],"date" => $row['document_date'],"type" => $row['document_type'],"security" => $security, "document" => $row['document_data']);
-	echo "4";
 	$conn->close();
 	return $return;
 }

@@ -36,8 +36,24 @@ viewButton.addEventListener("click",view);
 
 var params = getSearchParameters();
 if(params.id != undefined){
-    id.value = params.id;
-    view();
+	id.value = params.id;
+	view();
+}
+
+function getCookie(cname) {
+	let name = cname + "=";
+	let decodedCookie = decodeURIComponent(document.cookie);
+	let ca = decodedCookie.split(';');
+	for(let i = 0; i <ca.length; i++) {
+		let c = ca[i];
+		while (c.charAt(0) == ' ') {
+			c = c.substring(1);
+		}
+		if (c.indexOf(name) == 0) {
+			return c.substring(name.length, c.length);
+		}
+	}
+	return "";
 }
 
 function view(){
@@ -48,7 +64,7 @@ function view(){
 		error.innerHTML = "An error occurred while processing your request. Error: "+report.reason;
 		return;
 	}
-	result.data = "/documents/api/public/get_document_raw.php?document_id="+id.value;
+	result.data = "/documents/api/public/get_document_raw.php?document_id="+id.value+"&username="+getCookie('username')+"&token="+getCookie('token');
 }
 
 </script>

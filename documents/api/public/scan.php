@@ -15,7 +15,7 @@ if(!req_param('title') || !req_param('security')){
 $title = req_get('title');
 $security = req_get('security');
 
-$report = create_document(get_username(),$title,0,$security,adf_scan());
+$report = create_document(get_user_id(get_username()),$title,0,$security,adf_scan());
 if(!$report){
 	http_response_code(500);
     die(json_encode(array('success' => false, 'reason' => 'internal_error')));
